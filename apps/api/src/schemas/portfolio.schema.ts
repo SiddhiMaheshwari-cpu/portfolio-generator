@@ -9,3 +9,4 @@ export const createPortfolioSchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers and hyphens only"),
   bio: z.string().max(500).optional(),
 });
+export const updatePortfolioSchema = createPortfolioSchema.partial();
