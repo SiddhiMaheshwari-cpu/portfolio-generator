@@ -1,10 +1,13 @@
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { userSchema } from "../schemas/user.schema";
+import { publicUserSelect } from "../lib/user-select";
 
 export async function listUsers(_req: Request, res: Response) {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      select: publicUserSelect,
+    });
     res.json(users);
   } catch (error) {
     console.error(error);
@@ -12,33 +15,11 @@ export async function listUsers(_req: Request, res: Response) {
   }
 }
 
-export async function createUser(req: Request, res: Response) {
-  const result =userSchema.safeParse(req.body);
-  if(!result.success){
-    return res.status(400).json({
 
-    error: result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
-    });
-}
-const { name, email } = result.data;
-
-  try {
-    const newUser = await prisma.user.create({
-      data: { name, email },
-    });
-    res.status(201).json(newUser);
-  } catch (error) {
-    if (error instanceof Error && "code" in error && error.code === "P2002") {
-      return res.status(409).json({ error: "Email already in use" });
-    }
-    console.error(error);
-    res.status(500).json({ error: "Failed to create user" });
-  }
-}
 export async function getuser(req: Request<{id: string}>, res: Response) {
     const {id}=req.params;
     try {
-        const user = await prisma.user.findUnique({where:{id}});
+        const user = await prisma.user.findUnique({where:{id},select:publicUserSelect});
         if(!user){
             return res.status(404).json({error:"User not found"});
         }
