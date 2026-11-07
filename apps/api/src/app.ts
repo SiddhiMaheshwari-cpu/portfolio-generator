@@ -3,6 +3,7 @@ import healthRouter from "./routes/health.routes";
 import { userRouter } from "./routes/user.routes";
 import { authRouter } from "./routes/auth.routes";
 import { portfolioRouter } from "./routes/portfolio.routes";
+import { errorHandler, notFound } from "./middleware/error.middleware";
 
 
 // 1. create the app
@@ -15,4 +16,6 @@ app.use("/health", healthRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/portfolios",portfolioRouter);
+app.use(notFound);
+app.use(errorHandler);
 export default app;
