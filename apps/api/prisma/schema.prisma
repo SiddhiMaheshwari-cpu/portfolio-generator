@@ -12,5 +12,18 @@ model User {
   email     String   @unique
   name      String?
   passwordHash  String 
+   portfolios   Portfolio[]
   createdAt DateTime @default(now())
+}
+model Portfolio {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  bio       String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete:Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
