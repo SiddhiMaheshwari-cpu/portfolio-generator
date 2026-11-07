@@ -65,3 +65,20 @@ export async function login(req: Request, res: Response) {
     res.status(500).json({ error: "Failed to log in" });
   }
 }
+export async function me(_req: Request, res: Response) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: res.locals.userId },
+      select: publicUserSelect,
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+}
