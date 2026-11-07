@@ -17,7 +17,8 @@ app.use("/health", healthRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/portfolios",portfolioRouter);
+app.use("/p", publicRouter);
 app.use(notFound);
 app.use(errorHandler);
-app.use("/p", publicRouter);
+
 export default app;

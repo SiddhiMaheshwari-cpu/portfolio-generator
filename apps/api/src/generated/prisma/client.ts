@@ -49,3 +49,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Portfolio = Prisma.PortfolioModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel

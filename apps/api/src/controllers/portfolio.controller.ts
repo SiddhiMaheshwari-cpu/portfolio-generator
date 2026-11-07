@@ -108,7 +108,11 @@ export async function getPublicPortfolio(req: Request<{ slug: string }>, res: Re
         slug: true,
         bio: true,
         createdAt: true,
-        user: { select: {name: true } },
+        user: { select: { name: true } },
+        projects: {
+          select: { title: true, description: true, url: true },
+          orderBy: { createdAt: "asc" },
+        },
       },
     });
 
