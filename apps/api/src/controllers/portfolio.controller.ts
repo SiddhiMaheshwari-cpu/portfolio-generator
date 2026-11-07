@@ -99,3 +99,26 @@ export async function deletePortfolio(req: Request<{ id: string }>, res: Respons
     res.status(500).json({ error: "Failed to delete portfolio" });
   }
 }
+export async function getPublicPortfolio(req: Request<{ slug: string }>, res: Response) {
+  try {
+    const portfolio = await prisma.portfolio.findUnique({
+      where: { slug: req.params.slug },
+      select: {
+        title: true,
+        slug: true,
+        bio: true,
+        createdAt: true,
+        user: { select: {name: true } },
+      },
+    });
+
+    if (!portfolio) {
+      return res.status(404).json({ error: "Portfolio not found" });
+    }
+
+    res.json(portfolio);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch portfolio" });
+  }
+}
