@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  passwordHash  String 
-   portfolios   Portfolio[]
-  createdAt DateTime @default(now())
+  id           String      @id @default(cuid())
+  email        String      @unique
+  name         String?
+  passwordHash String
+  portfolios   Portfolio[]
+  createdAt    DateTime    @default(now())
 }
+
 model Portfolio {
   id        String   @id @default(cuid())
   title     String
   slug      String   @unique
   bio       String?
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete:Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
