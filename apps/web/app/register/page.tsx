@@ -1,0 +1,63 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { api } from "@/lib/api";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+    const email = form.get("email");
+    const password = form.get("password");
+
+    try {
+      await api("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ name: form.get("name"), email, password }),
+      });
+      const data = await api<{ token: string }>("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+      localStorage.setItem("token", data.token);
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="mx-auto max-w-sm px-6 py-24">
+      <h1 className="text-3xl font-bold">Create account</h1>
+      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <input name="name" placeholder="Name" required className="w-full rounded border px-3 py-2" />
+        <input name="email" type="email" placeholder="Email" required className="w-full rounded border px-3 py-2" />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password (min 8 characters)"
+          required
+          className="w-full rounded border px-3 py-2"
+        />
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <button type="submit" disabled={loading} className="w-full rounded bg-black px-3 py-2 text-white disabled:opacity-50">
+          {loading ? "Creating..." : "Register"}
+        </button>
+      </form>
+      <p className="mt-6 text-sm">
+        Already have an account? <Link href="/login" className="underline">Log in</Link>
+      </p>
+    </main>
+  );
+}
