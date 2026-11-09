@@ -43,6 +43,7 @@ export async function getMyPortfolio(req: Request<{ id: string }>, res: Response
   try {
     const portfolio = await prisma.portfolio.findFirst({
       where: { id: req.params.id, userId: res.locals.userId },
+      include:{projects:true}
     });
 
     if (!portfolio) {
