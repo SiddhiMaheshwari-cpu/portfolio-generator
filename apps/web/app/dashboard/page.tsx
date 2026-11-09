@@ -6,7 +6,12 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 
 type Me = { id: string; email: string; name: string | null };
-type Portfolio = { id: string; title: string; slug: string; bio: string | null };
+type Portfolio = {
+  id: string;
+  title: string;
+  slug: string;
+  bio: string | null;
+};
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -59,7 +64,9 @@ export default function DashboardPage() {
       setPortfolios((prev) => [created, ...prev]);
       formEl.reset();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create portfolio");
+      setError(
+        err instanceof Error ? err.message : "Failed to create portfolio",
+      );
     }
   }
 
@@ -70,7 +77,9 @@ export default function DashboardPage() {
       await api(`/portfolios/${id}`, { method: "DELETE", token });
       setPortfolios((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete portfolio");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete portfolio",
+      );
     }
   }
 
@@ -87,14 +96,23 @@ export default function DashboardPage() {
 
       <h2 className="mt-12 text-xl font-semibold">New portfolio</h2>
       <form onSubmit={handleCreate} className="mt-4 space-y-3">
-        <input name="title" placeholder="Title" required className="w-full rounded border px-3 py-2" />
+        <input
+          name="title"
+          placeholder="Title"
+          required
+          className="w-full rounded border px-3 py-2"
+        />
         <input
           name="slug"
           placeholder="slug (e.g. my-portfolio)"
           required
           className="w-full rounded border px-3 py-2"
         />
-        <textarea name="bio" placeholder="Short bio (optional)" className="w-full rounded border px-3 py-2" />
+        <textarea
+          name="bio"
+          placeholder="Short bio (optional)"
+          className="w-full rounded border px-3 py-2"
+        />
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button type="submit" className="rounded bg-black px-3 py-2 text-white">
           Create
@@ -107,14 +125,29 @@ export default function DashboardPage() {
       ) : (
         <ul className="mt-4 space-y-3">
           {portfolios.map((p) => (
-            <li key={p.id} className="flex items-center justify-between rounded-lg border p-4">
+            <li
+              key={p.id}
+              className="flex items-center justify-between rounded-lg border p-4"
+            >
               <div>
                 <p className="font-semibold">{p.title}</p>
-                <Link href={`/p/${p.slug}`} className="text-sm text-blue-600 underline">
+                <Link
+                  href={`/p/${p.slug}`}
+                  className="text-sm text-blue-600 underline"
+                >
                   /p/{p.slug}
                 </Link>
               </div>
-              <button onClick={() => handleDelete(p.id)} className="text-sm text-red-600">
+              <div className="flex items-center gap-4">
+                <Link href={`/dashboard/${p.id}`} className="text-sm underline">
+                  Manage
+                </Link>
+                
+              </div>
+              <button
+                onClick={() => handleDelete(p.id)}
+                className="text-sm text-red-600"
+              >
                 Delete
               </button>
             </li>
